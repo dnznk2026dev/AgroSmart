@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VERDE — Irrigação Inteligente</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+ --green:#27734d;
+ --ink:#1e3027;
+ --muted:#829087;
+ --line:#e8ede9;
+ --bg:#f7f9f7;
+ --white:#fff;
+ --shadow:0 8px 28px rgba(28,58,40,.045);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"DM Sans",sans-serif;font-size:14px}
+button,input{font:inherit}
+button{cursor:pointer;position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent}
+
+.shell{display:grid;grid-template-columns:236px minmax(0,1fr);min-height:100vh}
+.sidebar{background:#fff;border-right:1px solid var(--line);padding:25px 17px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:11px;padding:0 9px 34px;font:800 20px Manrope,sans-serif}
+.brand-mark{width:35px;height:35px;border-radius:11px;background:var(--green);display:grid;place-items:center;color:white}
+.brand-mark svg{width:20px;height:20px}
+.brand small{font:500 9px "DM Sans";display:block;color:#98a49b;letter-spacing:1.5px;margin-top:1px}
+.nav-label{font-size:9px;font-weight:700;letter-spacing:1.3px;color:#a2ada5;padding:0 12px;margin:8px 0 10px}
+nav{display:grid;gap:5px}
+.nav-item{border:0;background:transparent;text-align:left;padding:11px 12px;border-radius:10px;color:#748178;display:flex;align-items:center;gap:12px;font-size:12px;font-weight:600}
+.nav-item svg{width:17px;height:17px}
+.nav-item.active{background:#edf5ef;color:var(--green)}
+.nav-item:hover{background:#f5f8f5}
+.sidebar-bottom{margin-top:auto}
+.farm-card{background:#f5f8f5;border:1px solid #edf1ed;border-radius:13px;padding:13px}
+.farm-card .farm-top{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700}
+.farm-card p{font-size:10px;color:var(--muted);line-height:1.5;margin:7px 0 0}
+.avatar{width:29px;height:29px;border-radius:50%;background:#dcebe0;color:var(--green);display:grid;place-items:center;font-size:10px;font-weight:800}
+
+.main{min-width:0}
+.topbar{height:70px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 34px;gap:15px}
+.crumb{font-size:12px;color:var(--muted)}
+.crumb b{color:var(--ink)}
+.top-actions{display:flex;align-items:center;gap:17px}
+.online{display:flex;align-items:center;gap:7px;font-size:10px;color:#66816e}
+.online i{width:7px;height:7px;background:#4ba36b;border-radius:50%;box-shadow:0 0 0 3px #e4f2e8}
+.icon-btn{width:33px;height:33px;border:1px solid var(--line);background:#fff;border-radius:9px;color:#75847a;display:grid;place-items:center}
+.icon-btn svg{width:15px;height:15px}
+
+.content{max-width:1450px;margin:0 auto;padding:31px 34px 45px}
+.page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin-bottom:23px}
+.overline{font-size:9px;letter-spacing:1.6px;color:var(--green);font-weight:800}
+.page-head h1{font:800 29px Manrope,sans-serif;letter-spacing:-1.1px;margin:7px 0 5px}
+.page-head p{font-size:12px;color:var(--muted);margin:0}
+.head-actions{display:flex;gap:8px}
+
+.btn{border:1px solid var(--line);background:#fff;color:#526359;padding:9px 13px;border-radius:9px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:7px;transition:.18s}
+.btn svg{width:14px;height:14px}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.btn.primary{background:var(--green);border-color:var(--green);color:#fff}
+.btn.primary:hover{background:#1f6542}
+
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:15px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px 17px;box-shadow:var(--shadow)}
+.stat-head{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:10px;font-weight:600}
+.stat-icon{width:29px;height:29px;border-radius:9px;background:#f0f5f1;color:var(--green);display:grid;place-items:center}
+.stat-icon svg{width:15px;height:15px}
+.stat-value{font:800 25px Manrope,sans-serif;letter-spacing:-.8px;margin:11px 0 2px}
+.stat-foot{font-size:10px;color:#94a097}
+.stat-foot em{font-style:normal;color:var(--green);font-weight:700}
+
+.content-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(280px,.9fr);gap:14px}
+.col{display:grid;gap:14px;align-content:start}
+.panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:17px;box-shadow:var(--shadow);min-width:0}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.panel-head h2{font:700 13px Manrope,sans-serif;margin:0}
+.panel-head p{font-size:10px;color:var(--muted);margin:4px 0 0}
+.tiny-label{font-size:9px;color:#87958c;font-weight:700;letter-spacing:.7px}
+.tag{font-size:9px;font-weight:800;color:var(--green);background:#edf5ef;border-radius:20px;padding:6px 9px;white-space:nowrap}
+
+/* Imagem principal */
+.hero-photo{
+ height:225px;
+ position:relative;
+ border-radius:10px;
+ overflow:hidden;
+ isolation:isolate;
+ background:#dce9dd url('https://news.mit.edu/sites/default/files/download/202609/MIT-Robigo-01-press.jpg') center 52%/cover no-repeat;
+}
+.hero-photo:after{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(90deg,rgba(13,36,24,.62),rgba(13,36,24,.08) 85%)}
+.photo-copy{position:absolute;z-index:2;left:20px;bottom:19px;color:white;max-width:330px}
+.photo-copy .micro{font-size:9px;letter-spacing:1.5px;font-weight:800;color:#d7e8d9}
+.photo-copy h3{font:800 21px Manrope,sans-serif;margin:6px 0}
+.photo-copy p{font-size:10px;color:#e1ebe2;margin:0;line-height:1.5}
+
+/* ANIMAÇÃO DA IRRIGAÇÃO E DA HORTA */
+.field-scene{
+ position:absolute;
+ z-index:1;
+ right:0;
+ bottom:0;
+ width:58%;
+ height:100%;
+ pointer-events:none;
+ overflow:hidden;
+}
+.field-scene svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.crop-row{fill:#b7d4ad;opacity:.42}
+.sprinkler-body{stroke:#e8f3e8;stroke-width:2.5;stroke-linecap:round;fill:none;filter:drop-shadow(0 1px 2px #183b26)}
+.water-arc{fill:none;stroke:#a9e8ff;stroke-width:2.4;stroke-linecap:round;stroke-dasharray:5 8;opacity:0}
+.water-drop{fill:#bceeff;opacity:0}
+
+/* Água saindo do aspersor */
+.field-scene.irrigating .water-arc{
+ opacity:.95;
+ animation:waterFlow 1.05s linear infinite;
+}
+.field-scene.irrigating .water-drop{
+ opacity:.9;
+ animation:dropFall 1.15s ease-in infinite;
+}
+.field-scene.irrigating .water-drop:nth-of-type(2){animation-delay:.25s}
+.field-scene.irrigating .water-drop:nth-of-type(3){animation-delay:.5s}
+.field-scene.irrigating .water-drop:nth-of-type(4){animation-delay:.75s}
+
+@keyframes waterFlow{
+ to{stroke-dashoffset:-26}
+}
+@keyframes dropFall{
+ 0%{transform:translateY(-5px);opacity:0}
+ 20%{opacity:1}
+ 100%{transform:translateY(28px);opacity:0}
+}
+
+/* CHUVA CAINDO NA PLANTAÇÃO */
+.rain-layer{
+ position:absolute;
+ inset:-15px 0 0;
+ opacity:0;
+ transition:opacity .35s;
+ overflow:hidden;
+}
+.field-scene.raining .rain-layer{opacity:1}
+.rain-layer span{
+ position:absolute;
+ top:-22px;
+ width:2px;
+ height:17px;
+ border-radius:2px;
+ background:linear-gradient(transparent,#d9f2ff);
+ transform:rotate(16deg);
+ animation:rainFall .8s linear infinite;
+}
+.rain-layer span:nth-child(3n){animation-duration:1.05s;height:22px}
+.rain-layer span:nth-child(4n){animation-delay:-.45s}
+.rain-layer span:nth-child(5n){animation-delay:-.7s}
+@keyframes rainFall{
+ to{transform:translate(-15px,260px) rotate(16deg)}
+}
+.field-scene.raining .water-arc,
+.field-scene.raining .water-drop{
+ opacity:0!important;
+ animation:none!important;
+}
+
+.photo-status{position:absolute;z-index:3;right:14px;top:14px;background:#ffffffeb;border:1px solid #ffffff80;border-radius:8px;padding:7px 9px;font-size:9px;font-weight:800;color:#3b684b;display:flex;align-items:center;gap:7px}
+.photo-status i{width:6px;height:6px;border-radius:50%;background:#42a265}
+.photo-footer{display:flex;justify-content:space-between;align-items:center;padding-top:11px;font-size:10px;color:var(--muted)}
+.photo-footer b{color:#496052}
+
+.control-panel{display:grid;gap:13px}
+.control-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.control-copy b{display:block;font-size:11px}
+.control-copy small{display:block;font-size:9px;color:var(--muted);margin-top:3px}
+.toggle{width:38px;height:22px;border:0;border-radius:30px;background:#dce4de;padding:3px;transition:.2s;flex-shrink:0}
+.toggle:after{content:"";display:block;width:16px;height:16px;border-radius:50%;background:white;box-shadow:0 1px 2px #0002;transition:.2s}
+.toggle.on{background:var(--green)}
+.toggle.on:after{transform:translateX(16px)}
+.separator{height:1px;background:var(--line)}
+.range-box{background:#f8faf8;border:1px solid #edf1ed;border-radius:10px;padding:11px}
+.range-head{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:8px}
+.range-head strong{color:var(--ink)}
+input[type=range]{width:100%;accent-color:var(--green);height:14px;margin:0}
+.control-actions{display:flex;gap:8px}
+.control-actions .btn{flex:1;justify-content:center}
+.info-note{background:#f0f6f1;border-radius:9px;padding:10px;font-size:10px;line-height:1.5;color:#617468}
+.info-note strong{color:#315b40}
+
+.chart-panel{min-height:225px}
+.chart-area{height:145px}
+.chart-area canvas{width:100%;height:100%}
+.chart-foot{display:flex;justify-content:space-between;font-size:9px;color:#98a49c;margin-top:5px}
+.chart-foot span:first-child{color:var(--green);font-weight:700}
+
+.lower-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.zone-list{display:grid;gap:8px}
+.zone-row{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;padding:9px;border:1px solid #edf1ed;border-radius:10px}
+.zone-mark{width:29px;height:29px;border-radius:8px;background:#eff5f0;display:grid;place-items:center;color:var(--green)}
+.zone-mark svg{width:15px;height:15px}
+.zone-text b{font-size:10px;display:block}
+.zone-text small{font-size:9px;color:var(--muted)}
+.zone-right{text-align:right}
+.zone-right b{font-size:11px;display:block}
+.zone-right small{font-size:8px;color:var(--green);font-weight:800;letter-spacing:.4px}
+.log{display:grid}
+.log-row{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #f0f3f0;font-size:10px}
+.log-row:last-child{border:0}
+.log-row b{font-weight:600}
+.log-row time{font-size:9px;color:#98a49c;white-space:nowrap}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.setting{border:1px solid #edf1ed;background:#fafcfa;border-radius:10px;padding:10px}
+.setting label{display:block;font-size:9px;color:var(--muted);margin-bottom:5px}
+.setting strong{font:800 15px Manrope}
+.setting input{margin-top:7px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,15px);opacity:0;background:#203b2c;color:#fff;border-radius:9px;padding:10px 14px;font-size:11px;transition:.2s;pointer-events:none;z-index:10}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+footer{font-size:9px;color:#a0aaa3;text-align:center;padding:20px 0 0}
+.mobile-menu{display:none}
+
+/* ANIMAÇÃO DOS BOTÕES */
+button:active{transform:scale(.965)!important;filter:brightness(.97)}
+.btn,.icon-btn,.nav-item,.toggle{transition:transform .16s ease,background-color .2s ease,box-shadow .2s ease,filter .16s ease}
+.btn.is-pressed,.icon-btn.is-pressed,.nav-item.is-pressed{animation:buttonPop .34s ease}
+.toggle.is-pressed{animation:toggleTap .3s ease}
+@keyframes buttonPop{
+ 0%{transform:scale(1)}
+ 38%{transform:scale(.94)}
+ 72%{transform:scale(1.025)}
+ 100%{transform:scale(1)}
+}
+@keyframes toggleTap{
+ 0%{transform:scale(1)}
+ 45%{transform:scale(.9)}
+ 100%{transform:scale(1)}
+}
+.button-ripple{position:absolute;border-radius:50%;pointer-events:none;background:currentColor;opacity:.2;transform:scale(0);animation:rippleEffect .55s ease-out}
+@keyframes rippleEffect{to{transform:scale(1);opacity:0}}
+
+@media(max-width:1050px){
+ .shell{grid-template-columns:205px 1fr}
+ .content{padding:26px 22px}
+ .topbar{padding:0 22px}
+ .stats{grid-template-columns:repeat(2,1fr)}
+ .content-grid{grid-template-columns:1fr}
+ .col.right{grid-template-columns:1fr 1fr}
+ .col.right .panel:last-child{grid-column:1/-1}
+}
+@media(max-width:700px){
+ .shell{grid-template-columns:1fr}
+ .sidebar{display:none}
+ .topbar{height:58px;padding:0 15px}
+ .mobile-menu{display:grid}
+ .content{padding:22px 14px}
+ .page-head{align-items:flex-start;flex-direction:column}
+ .page-head h1{font-size:25px}
+ .head-actions{width:100%}
+ .head-actions .btn{flex:1;justify-content:center}
+ .stats{gap:8px}
+ .stat{padding:13px}
+ .stat-value{font-size:22px}
+ .content-grid{gap:10px}
+ .col.right{grid-template-columns:1fr}
+ .col.right .panel:last-child{grid-column:auto}
+ .lower-grid{grid-template-columns:1fr}
+ .hero-photo{height:205px}
+ .top-actions{gap:9px}
+}
+@media(prefers-reduced-motion:reduce){
+ .field-scene *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+
+<body>
+<div class="shell">
+
+<aside class="sidebar">
+ <div class="brand">
+  <div class="brand-mark">
+   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+    <path d="M20 4c-8 0-14 3-14 10a6 6 0 0 0 6 6c7 0 8-8 8-16Z"/>
+    <path d="M4 21c3-6 7-9 12-12"/>
+   </svg>
+  </div>
+  <div>verde<small>AGRICULTURA INTELIGENTE</small></div>
+ </div>
+
+ <div class="nav-label">ESPAÇO DE TRABALHO</div>
+ <nav>
+  <button class="nav-item active" data-section="overview">Visão geral</button>
+  <button class="nav-item" data-section="zones">Áreas de cultivo</button>
+  <button class="nav-item" data-section="history">Histórico de dados</button>
+  <button class="nav-item" data-section="settings">Configurações</button>
+ </nav>
+
+ <div class="sidebar-bottom">
+  <div class="farm-card">
+   <div class="farm-top"><span>Propriedade virtual</span><span class="avatar">PV</span></div>
+   <p>Fazenda demonstração<br>3 setores monitorados · 1,8 ha</p>
+  </div>
+ </div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+ <div class="crumb">Painel / <b>Visão geral</b></div>
+ <div class="top-actions">
+  <span class="online"><i></i> Sistema de demonstração ativo</span>
+  <span id="clock" style="font-size:10px;color:#8a978e">--:--</span>
+ </div>
+</header>
+
+<div class="content" id="overview">
+
+<section class="page-head">
+ <div>
+  <div class="overline">MONITORAMENTO AGRÍCOLA</div>
+  <h1>Visão geral</h1>
+  <p>Acompanhe as condições do solo e gerencie a irrigação da propriedade.</p>
+ </div>
+ <div class="head-actions">
+  <button class="btn" id="resetBtn">Restaurar dados</button>
+  <button class="btn primary" id="exportBtn">Exportar relatório</button>
+ </div>
+</section>
+
+<section class="stats">
+ <article class="stat">
+  <div class="stat-head">Umidade média do solo</div>
+  <div class="stat-value" id="moistureValue">42%</div>
+  <div class="stat-foot" id="moistureFoot">Leitura do sensor principal</div>
+ </article>
+ <article class="stat">
+  <div class="stat-head">Temperatura ambiente</div>
+  <div class="stat-value" id="tempValue">28°C</div>
+  <div class="stat-foot">Estimativa climática virtual</div>
+ </article>
+ <article class="stat">
+  <div class="stat-head">Reserva de água</div>
+  <div class="stat-value" id="tankValue">86%</div>
+  <div class="stat-foot" id="tankFoot">Capacidade disponível</div>
+ </article>
+ <article class="stat">
+  <div class="stat-head">Consumo simulado</div>
+  <div class="stat-value" id="usageValue">0,0 L</div>
+  <div class="stat-foot">Desde o início da sessão</div>
+ </article>
+</section>
+
+<section class="content-grid">
+<div class="col">
+
+<article class="panel">
+ <div class="panel-head">
+  <div>
+   <h2>Condição da propriedade</h2>
+   <p>Imagem ilustrativa de uma área agrícola irrigada</p>
+  </div>
+  <span class="tag">SETOR PRINCIPAL</span>
+ </div>
+
+ <div class="hero-photo">
+
+  <!-- DESENHO DA HORTA E DO ASPERSOR -->
+  <div class="field-scene" id="fieldScene">
+   <svg viewBox="0 0 360 225" preserveAspectRatio="xMidYMid slice">
+
+    <g class="crop-row">
+     <path d="M85 225 Q130 170 185 225Z"/>
+     <path d="M145 225 Q205 155 265 225Z"/>
+     <path d="M215 225 Q270 170 335 225Z"/>
+     <path d="M110 225 Q155 190 205 225Z"/>
+    </g>
+
+    <g class="sprinkler-body">
+     <path d="M245 205V157M237 205H253M245 157l-7-8m7 8 7-8"/>
+     <circle cx="245" cy="157" r="3" fill="#e8f3e8"/>
+    </g>
+
+    <g class="water-arc">
+     <path d="M245 157 Q190 100 145 142"/>
+     <path d="M245 157 Q208 80 205 104"/>
+     <path d="M245 157 Q280 88 315 120"/>
+     <path d="M245 157 Q300 130 330 165"/>
+    </g>
+
+    <g>
+     <circle class="water-drop" cx="155" cy="137" r="2.6"/>
+     <circle class="water-drop" cx="205" cy="108" r="2.4"/>
+     <circle class="water-drop" cx="310" cy="124" r="2.7"/>
+     <circle class="water-drop" cx="326" cy="164" r="2.3"/>
+    </g>
+   </svg>
+
+   <!-- GOTAS DA CHUVA SÃO CRIADAS PELO JAVASCRIPT -->
+   <div class="rain-layer" id="rainLayer"></div>
+  </div>
+
+  <div class="photo-status">
+   <i></i><span id="photoStatus">MONITORAMENTO ATIVO</span>
+  </div>
+
+  <div class="photo-copy">
+   <div class="micro">GESTÃO DE RECURSOS HÍDRICOS</div>
+   <h3>Produzir melhor.<br>Usar água com inteligência.</h3>
+   <p>Dados simulados para acompanhar o comportamento da irrigação.</p>
+  </div>
+ </div>
+
+ <div class="photo-footer">
+  <span>Área de cultivo · Talhão 01</span>
+  <b id="fieldStatus">Sistema em espera</b>
+ </div>
+</article>
+
+<article class="panel chart-panel" id="history">
+ <div class="panel-head">
+  <div>
+   <h2>Variação da umidade</h2>
+   <p>Leituras registradas durante a simulação</p>
+  </div>
+  <span class="tiny-label">ÚLTIMAS 18 LEITURAS</span>
+ </div>
+ <div class="chart-area"><canvas id="chart"></canvas></div>
+ <div class="chart-foot">
+  <span>Umidade do solo</span>
+  <span>Atualização automática</span>
+ </div>
+</article>
+
+</div>
+
+<div class="col right">
+
+<article class="panel">
+ <div class="panel-head">
+  <div>
+   <h2>Controle de irrigação</h2>
+   <p>Gerencie o comportamento do sistema</p>
+  </div>
+  <span class="tag" id="modeTag">AUTOMÁTICO</span>
+ </div>
+
+ <div class="control-panel">
+
+  <div class="control-row">
+   <div class="control-copy">
+    <b>Modo automático</b>
+    <small>O sistema responde aos sensores</small>
+   </div>
+   <button class="toggle on" id="autoToggle"></button>
+  </div>
+
+  <div class="separator"></div>
+
+  <div class="control-row">
+   <div class="control-copy">
+    <b>Precipitação simulada</b>
+    <small>Bloqueia a irrigação enquanto chove</small>
+   </div>
+   <button class="toggle" id="rainToggle"></button>
+  </div>
+
+  <div class="range-box">
+   <div class="range-head">
+    <span>Umidade atual do solo</span>
+    <strong id="rangeValue">42%</strong>
+   </div>
+   <input type="range" min="0" max="100" value="42" id="moistureRange">
+  </div>
+
+  <div class="range-box">
+   <div class="range-head">
+    <span>Nível do reservatório</span>
+    <strong id="tankRangeValue">86%</strong>
+   </div>
+   <input type="range" min="0" max="100" value="86" id="tankRange">
+  </div>
+
+  <div class="control-actions">
+   <button class="btn primary" id="waterBtn">Iniciar irrigação</button>
+   <button class="btn" id="dryBtn">Reduzir umidade</button>
+  </div>
+
+  <div class="info-note" id="systemNote">
+   <strong>Sistema em espera.</strong>
+   A irrigação inicia abaixo do limite definido.
+  </div>
+
+ </div>
+</article>
+
+<article class="panel" id="settings">
+ <div class="panel-head">
+  <div>
+   <h2>Parâmetros do sistema</h2>
+   <p>Defina os limites de operação</p>
+  </div>
+ </div>
+
+ <div class="settings-grid">
+  <div class="setting">
+   <label for="startRange">Ativar abaixo de</label>
+   <strong><span id="startValue">30</span>%</strong>
+   <input type="range" min="10" max="60" value="30" id="startRange">
+  </div>
+  <div class="setting">
+   <label for="stopRange">Desativar em</label>
+   <strong><span id="stopValue">70</span>%</strong>
+   <input type="range" min="40" max="95" value="70" id="stopRange">
+  </div>
+ </div>
+</article>
+
+</div>
+</section>
+
+<section class="lower-grid">
+
+<article class="panel" id="zones">
+ <div class="panel-head">
+  <div>
+   <h2>Áreas de cultivo</h2>
+   <p>Resumo dos setores cadastrados</p>
+  </div>
+  <span class="tiny-label">03 SETORES</span>
+ </div>
+
+ <div class="zone-list">
+  <div class="zone-row">
+   <div class="zone-mark">A</div>
+   <div class="zone-text">
+    <b>Setor A · Hortaliças</b>
+    <small>Sensor principal · Controle automático</small>
+   </div>
+   <div class="zone-right">
+    <b id="zoneA">42%</b>
+    <small id="zoneAStatus">MONITORANDO</small>
+   </div>
+  </div>
+
+  <div class="zone-row">
+   <div class="zone-mark">B</div>
+   <div class="zone-text">
+    <b>Setor B · Tomates</b>
+    <small>Sensor virtual · Área secundária</small>
+   </div>
+   <div class="zone-right">
+    <b id="zoneB">51%</b>
+    <small>ESTÁVEL</small>
+   </div>
+  </div>
+
+  <div class="zone-row">
+   <div class="zone-mark">C</div>
+   <div class="zone-text">
+    <b>Setor C · Milho</b>
+    <small>Sensor virtual · Área secundária</small>
+   </div>
+   <div class="zone-right">
+    <b id="zoneC">63%</b>
+    <small>ESTÁVEL</small>
+   </div>
+  </div>
+ </div>
+</article>
+
+<article class="panel">
+ <div class="panel-head">
+  <div>
+   <h2>Atividade recente</h2>
+   <p>Eventos registrados pelo sistema</p>
+  </div>
+  <button class="btn" id="clearLog">Limpar</button>
+ </div>
+ <div class="log" id="log"></div>
+</article>
+
+</section>
+
+<footer>
+ VERDE · Painel demonstrativo de irrigação inteligente.
+ Sensores, clima e consumo são simulados; nenhuma máquina real é controlada.
+</footer>
+
+</div>
+</main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+/* ANIMAÇÃO DOS BOTÕES */
+document.addEventListener('click', e => {
+ const button = e.target.closest('button');
+ if (!button) return;
+
+ button.classList.remove('is-pressed');
+ void button.offsetWidth;
+ button.classList.add('is-pressed');
+
+ setTimeout(() => button.classList.remove('is-pressed'), 380);
+
+ const rect = button.getBoundingClientRect();
+ const size = Math.max(rect.width, rect.height) * 1.35;
+
+ const ripple = document.createElement('span');
+ ripple.className = 'button-ripple';
+ ripple.style.width = ripple.style.height = size + 'px';
+ ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+ ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+
+ button.appendChild(ripple);
+ ripple.addEventListener('animationend', () => ripple.remove(), {once:true});
+});
+
+/* ANIMAÇÃO DA CHUVA */
+const fieldScene = $('fieldScene');
+const rainLayer = $('rainLayer');
+
+for(let i = 0; i < 38; i++){
+ const drop = document.createElement('span');
+ drop.style.left = (2 + (i * 37) % 98) + '%';
+ drop.style.animationDelay = (-((i * 17) % 100) / 100) + 's';
+ drop.style.opacity = (.35 + ((i * 13) % 60) / 100).toFixed(2);
+ rainLayer.appendChild(drop);
+}
+
+/* ESTADO DO SISTEMA */
+const base = {
+ m:42,
+ t:86,
+ auto:true,
+ rain:false,
+ water:false,
+ start:30,
+ stop:70,
+ usage:0
+};
+
+let s = {...base};
+let hist = [59,57,55,53,51,49,48,46,45,43,42];
+let logs = [];
+let toastTimer;
+
+function notify(t){
+ $('toast').textContent = t;
+ $('toast').classList.add('show');
+ clearTimeout(toastTimer);
+ toastTimer = setTimeout(() => $('toast').classList.remove('show'),2100);
+}
+
+function addLog(msg){
+ logs.unshift({
+  msg,
+  time:new Date().toLocaleTimeString('pt-BR',{
+   hour:'2-digit',
+   minute:'2-digit'
+  })
+ });
+ logs = logs.slice(0,7);
+ drawLogs();
+}
+
+function drawLogs(){
+ $('log').innerHTML = logs.length
+ ? logs.map(x => `
+  <div class="log-row">
+   <b>${x.msg}</b>
+   <time>${x.time}</time>
+  </div>
+ `).join('')
+ : '<div>Nenhuma atividade registrada.</div>';
+}
+
+function stopWater(msg='Irrigação desligada'){
+ if(!s.water) return;
+ s.water = false;
+ addLog(msg);
+}
+
+function startWater(){
+ if(s.rain){
+  notify('A irrigação está bloqueada durante a chuva.');
+  return;
+ }
+ if(s.t <= 0){
+  notify('O reservatório está vazio.');
+  return;
+ }
+ if(!s.water){
+  s.water = true;
+  addLog('Irrigação iniciada no Setor A');
+ }
+}
+
+function autoCheck(){
+ if(!s.auto) return;
+
+ if(s.rain){
+  stopWater('Irrigação pausada por precipitação');
+  return;
+ }
+
+ if(s.m < s.start && s.t > 0){
+  startWater();
+ }else if(s.m >= s.stop){
+  stopWater('Meta de umidade atingida');
+ }
+}
+
+/* ATUALIZAÇÃO DA INTERFACE */
+function render(){
+
+ $('moistureValue').textContent = s.m + '%';
+
+ $('moistureFoot').textContent =
+  s.m < s.start
+  ? 'Umidade abaixo do limite'
+  : s.m >= s.stop
+  ? 'Faixa de umidade atingida'
+  : 'Leitura do sensor principal';
+
+ $('tempValue').textContent =
+  (25 + Math.round((100-s.m)/20)) + '°C';
+
+ $('tankValue').textContent = s.t + '%';
+
+ $('tankFoot').textContent =
+  s.t < 20
+  ? 'Nível baixo · atenção'
+  : 'Capacidade disponível';
+
+ $('usageValue').textContent =
+  s.usage.toFixed(1).replace('.',',') + ' L';
+
+ $('rangeValue').textContent = s.m + '%';
+ $('moistureRange').value = s.m;
+
+ $('tankRangeValue').textContent = s.t + '%';
+ $('tankRange').value = s.t;
+
+ $('autoToggle').classList.toggle('on',s.auto);
+ $('rainToggle').classList.toggle('on',s.rain);
+
+ $('modeTag').textContent =
+  s.auto ? 'AUTOMÁTICO' : 'MANUAL';
+
+ /* AQUI AS ANIMAÇÕES SÃO LIGADAS AO SISTEMA */
+ fieldScene.classList.toggle(
+  'irrigating',
+  s.water && !s.rain
+ );
+
+ fieldScene.classList.toggle(
+  'raining',
+  s.rain
+ );
+
+ $('waterBtn').textContent =
+  s.water ? 'Desligar irrigação' : 'Iniciar irrigação';
+
+ $('fieldStatus').textContent =
+  s.water
+  ? 'Irrigação em funcionamento'
+  : s.rain
+  ? 'Chuva simulada'
+  : 'Sistema em espera';
+
+ $('photoStatus').textContent =
+  s.water
+  ? 'IRRIGAÇÃO EM FUNCIONAMENTO'
+  : s.rain
+  ? 'PRECIPITAÇÃO DETECTADA'
+  : 'MONITORAMENTO ATIVO';
+
+ $('systemNote').innerHTML =
+  s.rain
+  ? '<strong>Precipitação detectada.</strong> A irrigação está pausada.'
+  : s.t === 0
+  ? '<strong>Reservatório vazio.</strong> Ajuste o nível de água.'
+  : s.water
+  ? '<strong>Irrigação ativa.</strong> A umidade aumenta gradualmente.'
+  : s.m < s.start
+  ? '<strong>Solo abaixo do limite.</strong> O sistema pode iniciar a irrigação.'
+  : '<strong>Sistema em espera.</strong> A irrigação inicia abaixo de '+s.start+'%.';
+
+ $('zoneA').textContent = s.m + '%';
+ $('zoneB').textContent = Math.min(100,s.m+9) + '%';
+ $('zoneC').textContent = Math.min(100,s.m+21) + '%';
+
+ $('zoneAStatus').textContent =
+  s.water ? 'IRRIGANDO' :
+  s.m < s.start ? 'UMIDADE BAIXA' : 'MONITORANDO';
+
+ $('startValue').textContent = s.start;
+ $('stopValue').textContent = s.stop;
+
+ $('startRange').value = s.start;
+ $('stopRange').value = s.stop;
+
+ drawChart();
+}
+
+/* GRÁFICO */
+function drawChart(){
+ const c = $('chart');
+ const r = c.getBoundingClientRect();
+
+ if(!r.width || !r.height) return;
+
+ const d = window.devicePixelRatio || 1;
+ c.width = r.width * d;
+ c.height = r.height * d;
+
+ const x = c.getContext('2d');
+ x.scale(d,d);
+
+ const w = r.width;
+ const h = r.height;
+ const p = 22;
+
+ x.clearRect(0,0,w,h);
+ x.font = '9px DM Sans';
+
+ [0,50,100].forEach(v => {
+  let y = h-p-v/100*(h-p-5);
+
+  x.strokeStyle = '#edf1ed';
+  x.beginPath();
+  x.moveTo(26,y);
+  x.lineTo(w-3,y);
+  x.stroke();
+
+  x.fillStyle = '#a1aca4';
+  x.fillText(v+'%',1,y+3);
+ });
+
+ let a = hist.slice(-18);
+ let step = (w-34)/Math.max(1,a.length-1);
+
+ let pts = a.map((v,i) => ({
+  x:27+i*step,
+  y:h-p-v/100*(h-p-5)
+ }));
+
+ if(pts.length){
+  x.beginPath();
+
+  pts.forEach((v,i) =>
+   i ? x.lineTo(v.x,v.y) : x.moveTo(v.x,v.y)
+  );
+
+  x.strokeStyle = '#27734d';
+  x.lineWidth = 2.2;
+  x.stroke();
+
+  x.lineTo(pts.at(-1).x,h-p);
+  x.lineTo(pts[0].x,h-p);
+  x.closePath();
+
+  x.fillStyle = 'rgba(39,115,77,.09)';
+  x.fill();
+
+  pts.forEach(v => {
+   x.beginPath();
+   x.arc(v.x,v.y,2.5,0,Math.PI*2);
+   x.fillStyle = '#27734d';
+   x.fill();
+  });
+ }
+}
+
+/* BOTÕES E CONTROLES */
+$('autoToggle').onclick = () => {
+ s.auto = !s.auto;
+ addLog(s.auto ? 'Modo automático ativado' : 'Controle manual ativado');
+ autoCheck();
+ render();
+};
+
+$('rainToggle').onclick = () => {
+ s.rain = !s.rain;
+
+ addLog(
+  s.rain
+  ? 'Precipitação iniciada na simulação'
+  : 'Precipitação encerrada'
+ );
+
+ if(s.rain){
+  stopWater('Irrigação pausada por precipitação');
+ }
+
+ autoCheck();
+ render();
+};
+
+$('moistureRange').oninput = e => {
+ s.m = +e.target.value;
+ autoCheck();
+ render();
+};
+
+$('tankRange').oninput = e => {
+ s.t = +e.target.value;
+
+ if(!s.t){
+  stopWater('Irrigação interrompida · reservatório vazio');
+ }
+
+ render();
+};
+
+$('waterBtn').onclick = () => {
+ if(s.water){
+  stopWater();
+ }else{
+  startWater();
+ }
+ render();
+};
+
+$('dryBtn').onclick = () => {
+ s.m = Math.max(0,s.m-16);
+ hist.push(s.m);
+ addLog('Redução de umidade simulada');
+ autoCheck();
+ render();
+};
+
+$('startRange').oninput = e => {
+ s.start = +e.target.value;
+
+ if(s.start >= s.stop){
+  s.stop = Math.min(95,s.start+10);
+  $('stopRange').value = s.stop;
+ }
+
+ autoCheck();
+ render();
+};
+
+$('stopRange').oninput = e => {
+ s.stop = +e.target.value;
+
+ if(s.stop <= s.start){
+  s.start = Math.max(10,s.stop-10);
+  $('startRange').value = s.start;
+ }
+
+ autoCheck();
+ render();
+};
+
+$('resetBtn').onclick = () => {
+ s = {...base};
+ hist = [59,57,55,53,51,49,48,46,45,43,42];
+ logs = [];
+
+ addLog('Painel restaurado para os dados iniciais');
+ render();
+ notify('Dados restaurados');
+};
+
+$('clearLog').onclick = () => {
+ logs = [];
+ drawLogs();
+ notify('Atividades removidas');
+};
+
+/* EXPORTAÇÃO CSV */
+$('exportBtn').onclick = () => {
+ let rows = [
+  ['Leitura','Umidade do solo (%)','Reservatorio (%)','Consumo simulado (L)'],
+  ...hist.map((v,i) => [i+1,v,s.t,s.usage.toFixed(1)])
+ ];
+
+ let csv = rows.map(r => r.join(';')).join('\n');
+
+ let blob = new Blob(
+  ['\ufeff'+csv],
+  {type:'text/csv;charset=utf-8'}
+ );
+
+ let url = URL.createObjectURL(blob);
+ let a = document.createElement('a');
+
+ a.href = url;
+ a.download = 'relatorio-verde.csv';
+ a.click();
+
+ URL.revokeObjectURL(url);
+ notify('Relatório exportado em CSV');
+};
+
+/* NAVEGAÇÃO */
+document.querySelectorAll('.nav-item').forEach(b => {
+ b.onclick = () => {
+  document.querySelectorAll('.nav-item').forEach(n =>
+   n.classList.remove('active')
+  );
+
+  b.classList.add('active');
+
+  let target = b.dataset.section;
+
+  if(target === 'overview'){
+   window.scrollTo({top:0,behavior:'smooth'});
+  }else{
+   $(target).scrollIntoView({
+    behavior:'smooth',
+    block:'start'
+   });
+  }
+ };
+});
+
+/* SIMULAÇÃO AUTOMÁTICA */
+function tick(){
+
+ if(s.water){
+  s.m = Math.min(100,s.m+3);
+  s.t = Math.max(0,s.t-1);
+  s.usage += 12;
+
+  if(s.m >= s.stop){
+   stopWater('Meta de umidade atingida');
+  }
+
+  if(s.t === 0){
+   stopWater('Reservatório vazio');
+  }
+
+ }else if(!s.rain){
+  s.m = Math.max(0,s.m-1);
+ }
+
+ hist.push(s.m);
+ hist = hist.slice(-18);
+
+ autoCheck();
+ render();
+}
+
+function clock(){
+ $('clock').textContent =
+  new Date().toLocaleTimeString('pt-BR',{
+   hour:'2-digit',
+   minute:'2-digit'
+  });
+}
+
+addLog('Painel iniciado');
+addLog('Sensor principal conectado · 42%');
+
+render();
+clock();
+
+setInterval(clock,1000);
+setInterval(tick,4000);
+
+window.addEventListener('resize',drawChart);
+</script>
+</body>
+</html>
